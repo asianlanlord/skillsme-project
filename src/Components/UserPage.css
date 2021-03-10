@@ -1,0 +1,40 @@
+.form-wrapper {
+  width: 80%;
+  margin-top: 2em;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#text-form {
+  text-align: center;
+}
+
+#title-form {
+  width: 80%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.editor-container {
+  height: 50vh;
+  background-color: white;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+#form-submit-button {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2em;
+  padding-right: 2em;
+}
+
+#code-form {
+  width: 80%;
+  height: 50vh;
+}
+
+

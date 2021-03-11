@@ -98,8 +98,8 @@ function App() {
       <NavBar user={user} handleLogout={handleLogout} email={currentUser}/>
       <Switch>
         <Route exact path="/" component={HomePage} />
-        <Route exact path="/post" component={PostPage} />
-        <Route exact path="/discussion/:id" component={DiscussionPage} />
+        <Route exact path="/post" render={() => <PostPage author={currentUser} />}/>
+        <Route exact path="/discussion" component={DiscussionPage} />
         <Route exact path="/login" render={() => !user ?
             <LoginPage email={email}
               setEmail={setEmail}

@@ -1,8 +1,7 @@
 import './HomePage.css';
-import draftToHtml from 'draftjs-to-html';
 import { useState } from 'react';
 import React from 'react';
-import renderHTML from 'react-render-html';
+import { Button } from 'react-bootstrap';
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -29,8 +28,13 @@ class HomePage extends React.Component {
     return (
       <div className="home-page" >
         {this.state.posts.map( (item) => (
-          <p><a key={item.post_title} href="/user" id="post-title"> Title: {item.post_title} </a> </p>
+          <>
+          <p><a key={item.post_title} href="/discussion" id="post-title"> {item.post_title} </a> </p>
+          <p id="post-author"> Posted by: {item.post_author} </p>
+          </>
         ))}
+
+        <Button variant="secondary" href="/post"> Post New Discussion</Button>
       </div>
     );
   }

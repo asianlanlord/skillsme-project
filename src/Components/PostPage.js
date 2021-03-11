@@ -1,36 +1,45 @@
 import './PostPage.css';
-import Prism from 'prismjs';
-import './prism.css';
+import React from 'react';
+import nextId from 'react-id-generator';
+
+import { Row, Col, Button, Form } from 'react-bootstrap';
+
 import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
-import { Row, Col, Button, Form } from 'react-bootstrap';
-import React from 'react';
+
+
+import Prism from 'prismjs';
+import './prism.css';
 
 
 class PostPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      user: '',
-      userSuggestions: '',
+      userList: [],
       title: '',
       contentState: null,
       code: '',
       codeLanguage: '',
       post: [{
+        post_id: '',
         post_title: '',
         post_body: '',
         post_code: '',
         post_codeLanguage: '',
+        post_author: this.props.author,
+        post_replies: [],
       }],
     }
 
     this.addPostToStorage = this.addPostToStorage.bind(this);
+    this.getUserSuggestions = this.getUserSuggestions.bind(this);
 
   }
 
   componentDidMount() {
     Prism.highlightAll();
+    this.getUserSuggestions();
     document.addEventListener("title-input", this.handleTitleInput)
     document.addEventListener("body-input", this.onContentStateChange)
     document.addEventListener("code-input", this.handleCodeInput)
@@ -48,10 +57,24 @@ class PostPage extends React.Component {
     document.removeEventListener("code-language", this.handleLanguageSelect)
   }
 
+
+  getUserSuggestions = () => {
+    var currentPosts = JSON.parse(localStorage.getItem("post"))
+
+    var currentUsers = [];
+    currentPosts.map((x) => {
+      currentUsers.push({ text: x.post_author, value: x.post_author})
+    })
+    
+    this.setState({ userList: currentUsers});
+  }
+
   onContentStateChange = (contentState) => {
     this.setState({
       contentState: contentState,
     });
+
+    console.log(this.state.userList);
   };
 
   handleTitleInput = (event) => {
@@ -79,18 +102,21 @@ class PostPage extends React.Component {
 
     localStorage.setItem("post", JSON.stringify(post_array))
 
-    var i = JSON.parse(localStorage.getItem("post"));
-    console.log(i);
-
+    // For checking submitted data.
+    // var i = JSON.parse(localStorage.getItem("post"));
+    // console.log(i);
   }
 
   handleSubmit = () => {
     this.setState({
       post: {
+        post_id: nextId(),
         post_title: this.state.title,
         post_body: draftToHtml(this.state.contentState),
         post_code: this.state.code,
         post_codeLanguage: this.state.codeLanguage,
+        post_author: this.props.author,
+        post_replies: [],
       }
     }, async () => {
       this.addPostToStorage();
@@ -100,6 +126,9 @@ class PostPage extends React.Component {
         code: '',
         codeLanguage: '',
       })
+
+      //Redirects to home once submitted.
+      window.location.replace('/');
     });
 
     // For clearing data: localStorage.clear();
@@ -125,16 +154,7 @@ class PostPage extends React.Component {
                   mention={{
                     separator: ' ',
                     trigger: '@',
-                    suggestions: [
-                      { text: 'APPLE', value: 'apple', url: 'apple' },
-                      { text: 'BANANA', value: 'banana', url: 'banana' },
-                      { text: 'CHERRY', value: 'cherry', url: 'cherry' },
-                      { text: 'DURIAN', value: 'durian', url: 'durian' },
-                      { text: 'EGGFRUIT', value: 'eggfruit', url: 'eggfruit' },
-                      { text: 'FIG', value: 'fig', url: 'fig' },
-                      { text: 'GRAPEFRUIT', value: 'grapefruit', url: 'grapefruit' },
-                      { text: 'HONEYDEW', value: 'honeydew', url: 'honeydew' },
-                    ],
+                    suggestions: this.state.userList,
                   }}
                   hashtag={{}}
                   onContentStateChange={this.onContentStateChange}

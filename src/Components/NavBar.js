@@ -14,7 +14,6 @@ function NavBar(props) {
           <Nav className="mr-auto">
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/login">Login</Nav.Link>
-            <Nav.Link href="/user">User</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
@@ -26,7 +25,6 @@ function NavBar(props) {
           <Nav className="mr-auto">
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/login" onClick={handleLogout}>Logout</Nav.Link>
-            <Nav.Link href="/user">User</Nav.Link>
             <Nav.Link> Hi {email} </Nav.Link>
           </Nav>
         </Navbar.Collapse>

@@ -3,6 +3,15 @@
     margin-left: auto;
     margin-right: auto;
     text-align: center;
+    font-size: 1em;
+    margin-top: 10vh;
+}
+
+#post-card{
+    background-color: white;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    margin-bottom: 2em;
 }
 
 #post-title{
@@ -13,4 +22,8 @@
 #post-author{
     color: grey;
     font-size: 1em;
+}
+
+#page-header{
+    margin-bottom: 2em;
 }

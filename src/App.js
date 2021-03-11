@@ -9,6 +9,8 @@ import NavBar from './Components/NavBar.js';
 import LoginPage from './Components/LoginPage';
 import PostPage from './Components/PostPage';
 import DiscussionPage from './Components/DiscussionPage';
+import ReplyPage from './Components/ReplyPage';
+import Error404Page from './Components/Error404Page';
 
 
 function App() {
@@ -38,6 +40,7 @@ function App() {
       .signInWithEmailAndPassword(email, password)
       .catch(err => {
         switch (err.code) {
+          
           case "auth/invalid-email":
           case "auth/user-disabled":
           case "auth/user-not-found":
@@ -45,6 +48,8 @@ function App() {
             break;
           case "auth/wrong-password":
             setPasswordError(err.message);
+            break;
+          default:
             break;
         }
       })
@@ -63,6 +68,8 @@ function App() {
             break;
           case "auth/weak-password":
             setPasswordError(err.message);
+            break;
+          default:
             break;
         }
       })
@@ -97,9 +104,10 @@ function App() {
     <Router>
       <NavBar user={user} handleLogout={handleLogout} email={currentUser}/>
       <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route exact path="/post" render={() => <PostPage author={currentUser} />}/>
-        <Route exact path="/discussion" component={DiscussionPage} />
+        <Route exact path="/" render={() => <HomePage user={user} />} />
+        <Route exact path="/post" render={() => <PostPage author={currentUser} user={user} />}/>
+        <Route exact path="/discussion/:id" component={DiscussionPage} />
+        <Route exact path="/reply/:id" render={() => <ReplyPage author={currentUser} user={user} />} />
         <Route exact path="/login" render={() => !user ?
             <LoginPage email={email}
               setEmail={setEmail}
@@ -111,6 +119,7 @@ function App() {
               setHasAccount={setHasAccount}
               emailError={emailError}
               passwordError={passwordError} /> : <Redirect to="/" />} />
+        <Route component={Error404Page} />
       </Switch>
     
     </Router>

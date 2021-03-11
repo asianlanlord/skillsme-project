@@ -1,5 +1,5 @@
 import './LoginPage.css';
-import { Button, Container, Row, Col } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 
 
 const LoginPage = (props) => {

@@ -11,23 +11,21 @@ import Prism from 'prismjs';
 import './prism.css';
 
 
-class PostPage extends React.Component {
+class ReplyPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       userList: [],
-      title: '',
       contentState: null,
       code: '',
-      codeLanguage: 'language-js',
+      codeLanguage: '',
+      id: window.location.pathname.slice(7,15),
       post: [{
         post_id: '',
-        post_title: '',
         post_body: '',
         post_code: '',
         post_codeLanguage: '',
-        post_author: this.props.author,
-        post_replies: [],
+        post_author: '',
       }],
     }
 
@@ -39,7 +37,7 @@ class PostPage extends React.Component {
   componentDidMount() {
     Prism.highlightAll();
     this.getUserSuggestions();
-    document.addEventListener("title-input", this.handleTitleInput)
+    console.log(this.state.id);
     document.addEventListener("body-input", this.onContentStateChange)
     document.addEventListener("code-input", this.handleCodeInput)
     document.addEventListener("code-language", this.handleLanguageSelect)
@@ -50,21 +48,10 @@ class PostPage extends React.Component {
   }
 
   componentWillUnmout() {
-    document.removeEventListener("title-input", this.handleTitleInput)
     document.removeEventListener("body-input", this.onContentStateChange)
     document.removeEventListener("code-input", this.handleCodeInput)
     document.removeEventListener("code-language", this.handleLanguageSelect)
   }
-
-  makeId = (length) => {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
-       result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
- }
 
   getUserSuggestions = () => {
     var currentPosts = JSON.parse(localStorage.getItem("post"))
@@ -89,12 +76,6 @@ class PostPage extends React.Component {
     console.log(this.state.userList);
   };
 
-  handleTitleInput = (event) => {
-    this.setState({
-      title: event.target.value
-    })
-  }
-
   handleCodeInput = (event) => {
     this.setState({
       code: event.target.value
@@ -108,10 +89,15 @@ class PostPage extends React.Component {
   }
 
   addPostToStorage(){
-    var post_array = JSON.parse(localStorage.getItem("post")) || []
-    post_array.push(this.state.post);
+    var post_array = JSON.parse(localStorage.getItem("post"))
+    post_array.map((x) => {
+        if(x.post_id === this.state.id){
+            x.post_replies.push(this.state.post);
+        }
+    })
 
 
+    console.log(post_array);
     localStorage.setItem("post", JSON.stringify(post_array))
 
     // For checking submitted data.
@@ -122,46 +108,35 @@ class PostPage extends React.Component {
   handleSubmit = () => {
     this.setState({
       post: {
-        post_id: this.makeId(8),
-        post_title: this.state.title,
+        post_id: this.state.id,
         post_body: draftToHtml(this.state.contentState),
         post_code: this.state.code,
         post_codeLanguage: this.state.codeLanguage,
         post_author: this.props.author,
-        post_replies: [],
       }
     }, async () => {
       this.addPostToStorage();
       this.setState({
-        title: '',
         contentState: null,
         code: '',
         codeLanguage: '',
       })
 
-      //Redirects to home once submitted.
-      window.location.replace('/');
+      //Redirects to discussion page with same id when submitted.
+      window.location.replace(`/discussion/${this.state.post.post_id}`);
     });
-
-    
     // For clearing data: localStorage.clear();
   }
 
   render() {
     return (
       <div className="user-page">
-        {this.props.user ? (
-          <>
-          <Row>
+        <Row>
           <Col lg="4" md="4" sm="12" xs="12" id="text-form">
-            <h2> Share your thoughts (or struggles) </h2>
+            <h2> Share your answer: </h2>
             <Form>
               <Form.Group>
-                <Form.Label> Title </Form.Label>
-                <Form.Control id="title-form" as="textarea" rows={1} onChange={this.handleTitleInput} />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label> Body </Form.Label>
+                <Form.Label> Answer </Form.Label>
                 <Editor
                   editorContent={this.state.contentState}
                   wrapperClassName="form-wrapper"
@@ -179,7 +154,7 @@ class PostPage extends React.Component {
           </Col>
           <Col lg="4" md="4" sm="12" xs="12">
             <Form>
-              <h2> Share your code (optional)</h2>
+              <h2> Share your code </h2>
               <Form.Group as={Row}>
                 <Form.Label as="legend" column sm={2}>
                   Select Language
@@ -227,14 +202,9 @@ class PostPage extends React.Component {
           </Col>
         </Row>
         <Button variant="secondary" id="form-submit-button" onClick={this.handleSubmit}> Submit </Button>
-        </>
-        ) : (
-          <h1 id="login-cta"> Log in to post discussions </h1>
-        )}
-        
       </div>
     );
   }
 }
 
-export default PostPage;
+export default ReplyPage;

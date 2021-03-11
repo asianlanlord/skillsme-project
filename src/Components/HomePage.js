@@ -1,7 +1,7 @@
 import './HomePage.css';
-import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Container} from 'react-bootstrap';
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -27,14 +27,25 @@ class HomePage extends React.Component {
   render() {
     return (
       <div className="home-page" >
-        {this.state.posts.map( (item) => (
-          <>
-          <p><a key={item.post_title} href="/discussion" id="post-title"> {item.post_title} </a> </p>
-          <p id="post-author"> Posted by: {item.post_author} </p>
-          </>
-        ))}
-
-        <Button variant="secondary" href="/post"> Post New Discussion</Button>
+        <h1 id="page-header"> Discussions </h1>
+        {this.props.user ? (
+          [
+            (!this.state.post ? this.state.posts.map((item) => (
+              <Container>
+              <div id="post-card">
+                <p key={item.post_id}><Link to={`/discussion/${item.post_id}`} id="post-title"> {item.post_title} </Link> </p>
+                <p id="post-author"> Posted by: {item.post_author} </p>
+              </div>
+              </Container>
+            )) : (
+              <p> There are no posts on the site</p>
+            )),
+            <Button variant="secondary" href="/post"> Post New Discussion</Button>
+          ]
+        ) : (
+          <p id="page-header">  Log in to view and post discussions </p>
+        )}
+        
       </div>
     );
   }

@@ -22,33 +22,25 @@ class DiscussionPage extends React.Component {
     }
   }
 
+  //Get post, id and highlight code when component mounts.
   componentDidMount() {
     this.getPosts();
     this.getId();
-
     Prism.highlightAll();
   }
+
   componentDidUpdate() {
     Prism.highlightAll();
   }
 
+  // Get posts from local storage
   getPosts = () => {
     this.setState({
       posts: JSON.parse(localStorage.getItem("post")),
     })
   }
 
-  getId = () => {
-    this.setState({ 
-      postId: this.props.match.params.id 
-    }, async () => {
-      this.getReplies();
-      console.log(this.state.post_replies);
-    })
-
-    
-  }
-
+  // Get post replies from local storage with matching ID and setting it to this.state.post_replies.
   getReplies = () => {
     var post_array = JSON.parse(localStorage.getItem("post"))
     post_array.map((x) => {
@@ -58,15 +50,26 @@ class DiscussionPage extends React.Component {
     })
   }
 
+  // Set id based on url id & get replies.
+  getId = () => {
+    this.setState({ 
+      postId: this.props.match.params.id 
+    }, async () => {
+      this.getReplies();
+      console.log(this.state.post_replies);
+    })
+  }
+
 
   render() {
+    var repliesExist = (this.state.post_replies.length > 0);
     return (
-      <div className="discussion-page" >
-        <Container>
+      <Container className="discussion-page" >
           {this.state.posts.map((item) => {
             if (item.post_id === this.state.postId) {
               return (
                 <>
+                  <Container id="original">
                   <p key={item.post_title} id="post-title"> {item.post_title}  </p>
                   <p id="post-author"> Posted by: {item.post_author} </p>
                   <p> {renderHTML(item.post_body)}</p>
@@ -76,10 +79,13 @@ class DiscussionPage extends React.Component {
                       {item.post_code}
                     </code>
                   </pre>
-                  {this.state.post_replies ? (
+                  </Container>
+       
+                  {repliesExist ? (
                     this.state.post_replies.map((reply) => {
                       return (
                         <>
+                        <Container id="replies">
                           <p id="post-author"> Reply from: {reply.post_author} </p>
                           <p> {renderHTML(reply.post_body)}</p>
                           <pre id="code-preview">
@@ -87,13 +93,14 @@ class DiscussionPage extends React.Component {
                               {reply.post_code}
                             </code>
                           </pre>
+                          </Container>
                         </>
                       );
                     })
                   ) : (
-                    <p> There are no replies to this question. Be the first one! </p>
+                    <p id="alert-text"> There are no replies to this question. Be the first one! </p>
                   )}
-                  <Button variant="secondary" href={`/reply/${item.post_id}`}> Post Reply</Button>
+                  <Button variant="secondary" id="reply-button" href={`/reply/${item.post_id}`}> Post Reply</Button>
                 </>
               );
             }
@@ -103,8 +110,8 @@ class DiscussionPage extends React.Component {
           })}
 
 
-        </Container>
-      </div>
+       
+      </Container>
     );
   }
 }

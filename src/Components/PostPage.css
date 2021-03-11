@@ -1,17 +1,30 @@
+.user-page{
+  margin-top: 2em;
+}
 .form-wrapper {
-  width: 80%;
   margin-top: 2em;
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
 
+h4{
+  font-weight: 300;
+  margin-bottom: 1em;
+}
+
+#column{
+  border-right: 1px solid lightgrey;
+}
+
 #text-form {
-  text-align: center;
+  width: 80%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #title-form {
-  width: 80%;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -28,13 +41,19 @@
   display: block;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 2em;
-  padding-right: 2em;
+  width: 20%;
 }
 
 #code-form {
   width: 80%;
   height: 50vh;
+}
+
+#code-editor{
+  width: 80%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #login-cta{

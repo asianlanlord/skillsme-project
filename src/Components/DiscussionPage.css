@@ -1,0 +1,41 @@
+.discussion-page{
+    margin-top: 5em;
+    width: 70%;
+}
+
+.post-title{
+    font-weight: bold;
+}
+
+#original{
+    background-color: white;
+    padding: 1em 1em 1em 1em;
+    
+}
+
+#alert-text{
+    color: grey;
+    margin-top: 1em;
+    text-align: center;
+}
+
+#replies{
+    margin-top: 5em;
+    background-color: white;
+    padding: 1em 1em 1em 1em;
+}
+
+#reply-button{
+    display:block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 20%;
+    margin-bottom: 5em;
+    margin-top: 2em;
+}
+
+@media only screen and (max-width: 767px){
+    #reply-button{
+        width: 50%
+    }
+}

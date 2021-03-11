@@ -1,4 +1,3 @@
-import './NavBar.css';
 import { Navbar, Nav } from 'react-bootstrap';
 
 function NavBar(props) {
@@ -8,7 +7,7 @@ function NavBar(props) {
     <>
     {!user ? (
       <Navbar bg="dark" variant="dark">
-        <Navbar.Brand href="/">Budget Stackoverflow</Navbar.Brand>
+        <Navbar.Brand href="/">Overflowstack</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
@@ -19,7 +18,7 @@ function NavBar(props) {
       </Navbar>
     ) : (
       <Navbar bg="dark" variant="dark">
-        <Navbar.Brand href="/">Budget Stackoverflow</Navbar.Brand>
+        <Navbar.Brand href="/">Overflowstack</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">

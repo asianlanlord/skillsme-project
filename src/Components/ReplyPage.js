@@ -1,7 +1,7 @@
 import './PostPage.css';
 import React from 'react';
 
-import { Row, Col, Button, Form } from 'react-bootstrap';
+import { Row, Col, Button, Form, Container } from 'react-bootstrap';
 
 import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
@@ -18,8 +18,8 @@ class ReplyPage extends React.Component {
       userList: [],
       contentState: null,
       code: '',
-      codeLanguage: '',
-      id: window.location.pathname.slice(7,15),
+      codeLanguage: 'language-js',
+      id: window.location.pathname.slice(7, 15),
       post: [{
         post_id: '',
         post_body: '',
@@ -29,7 +29,7 @@ class ReplyPage extends React.Component {
       }],
     }
 
-    this.addPostToStorage = this.addPostToStorage.bind(this);
+    this.addReplyToStorage = this.addReplyToStorage.bind(this);
     this.getUserSuggestions = this.getUserSuggestions.bind(this);
 
   }
@@ -53,18 +53,19 @@ class ReplyPage extends React.Component {
     document.removeEventListener("code-language", this.handleLanguageSelect)
   }
 
+  // Get list of users and return as array for use in react-draftjs-wysiwyg component.
   getUserSuggestions = () => {
     var currentPosts = JSON.parse(localStorage.getItem("post"))
 
-    if (!currentPosts){
+    if (!currentPosts) {
       console.log("There are no posts");
-    } else{
+    } else {
       var currentUsers = [];
       currentPosts.map((x) => {
-        currentUsers.push({ text: x.post_author, value: x.post_author})
+        currentUsers.push({ text: x.post_author, value: x.post_author })
       })
-  
-      this.setState({ userList: currentUsers});
+
+      this.setState({ userList: currentUsers });
     }
   }
 
@@ -88,17 +89,21 @@ class ReplyPage extends React.Component {
     });
   }
 
-  addPostToStorage(){
-    var post_array = JSON.parse(localStorage.getItem("post"))
-    post_array.map((x) => {
-        if(x.post_id === this.state.id){
-            x.post_replies.push(this.state.post);
+  // Add reply to the post_replies object of post with the same id.
+  addReplyToStorage() {
+    if (!this.state.contentState || !this.state.code) {
+      alert("Replies must contain a proper message and some code!")
+    } else {
+      var post_array = JSON.parse(localStorage.getItem("post"))
+      post_array.map((x) => {
+        if (x.post_id === this.state.id) {
+          x.post_replies.push(this.state.post);
         }
-    })
+      })
 
-
-    console.log(post_array);
-    localStorage.setItem("post", JSON.stringify(post_array))
+      console.log(post_array);
+      localStorage.setItem("post", JSON.stringify(post_array))
+    }
 
     // For checking submitted data.
     // var i = JSON.parse(localStorage.getItem("post"));
@@ -115,7 +120,7 @@ class ReplyPage extends React.Component {
         post_author: this.props.author,
       }
     }, async () => {
-      this.addPostToStorage();
+      this.addReplyToStorage();
       this.setState({
         contentState: null,
         code: '',
@@ -132,73 +137,81 @@ class ReplyPage extends React.Component {
     return (
       <div className="user-page">
         <Row>
-          <Col lg="4" md="4" sm="12" xs="12" id="text-form">
-            <h2> Share your answer: </h2>
-            <Form>
-              <Form.Group>
-                <Form.Label> Answer </Form.Label>
-                <Editor
-                  editorContent={this.state.contentState}
-                  wrapperClassName="form-wrapper"
-                  editorClassName="editor-container"
-                  mention={{
-                    separator: ' ',
-                    trigger: '@',
-                    suggestions: this.state.userList,
-                  }}
-                  hashtag={{}}
-                  onContentStateChange={this.onContentStateChange}
-                />
-              </Form.Group>
-            </Form>
+          <Col lg="4" md="4" sm="12" xs="12" id="column">
+            <Container id="text-form">
+              <h3> Share your answer: </h3>
+              <Form>
+                <Form.Group>
+                  <Form.Label> Answer </Form.Label>
+                  <Editor
+                    editorContent={this.state.contentState}
+                    wrapperClassName="form-wrapper"
+                    editorClassName="editor-container"
+                    mention={{
+                      separator: ' ',
+                      trigger: '@',
+                      suggestions: this.state.userList,
+                    }}
+                    hashtag={{}}
+                    onContentStateChange={this.onContentStateChange}
+                  />
+                </Form.Group>
+              </Form>
+            </Container>
           </Col>
-          <Col lg="4" md="4" sm="12" xs="12">
-            <Form>
-              <h2> Share your code </h2>
-              <Form.Group as={Row}>
-                <Form.Label as="legend" column sm={2}>
-                  Select Language
+          <Col lg="4" md="4" sm="12" xs="12" id="column">
+            <Container id="code-editor">
+              <Form>
+                <h3> Step 2: </h3>
+                <h4> Share your code </h4>
+                <Form.Group as={Row}>
+                  <Form.Label as="legend" column sm={2}>
+                    Select
               </Form.Label>
-                <Col sm={10}>
-                  <Form.Check
-                    type="radio"
-                    label="HTML"
-                    name="language-selector"
-                    id="HTML-language-selector"
-                    value="language-html"
-                    onChange={this.handleLanguageSelect}
-                  />
-                  <Form.Check
-                    type="radio"
-                    label="CSS"
-                    name="language-selector"
-                    id="CSS-language-selector"
-                    value="language-css"
-                    onChange={this.handleLanguageSelect}
-                  />
-                  <Form.Check
-                    type="radio"
-                    label="Javascript (default)"
-                    name="language-selector"
-                    id="javascript-language-selector"
-                    value="language-js"
-                    onChange={this.handleLanguageSelect}
-                  />
-                </Col>
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Your code: </Form.Label>
-                <Form.Control id="code-form" as="textarea" placeholder="Write or paste your code here" rows={3} onChange={this.handleCodeInput} />
-              </Form.Group>
-            </Form>
+                  <Col sm={10}>
+                    <Form.Check
+                      type="radio"
+                      label="HTML"
+                      name="language-selector"
+                      id="HTML-language-selector"
+                      value="language-html"
+                      onChange={this.handleLanguageSelect}
+                    />
+                    <Form.Check
+                      type="radio"
+                      label="CSS"
+                      name="language-selector"
+                      id="CSS-language-selector"
+                      value="language-css"
+                      onChange={this.handleLanguageSelect}
+                    />
+                    <Form.Check
+                      type="radio"
+                      label="Javascript (default)"
+                      name="language-selector"
+                      id="javascript-language-selector"
+                      value="language-js"
+                      onChange={this.handleLanguageSelect}
+                    />
+                  </Col>
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label>Your code: </Form.Label>
+                  <Form.Control id="code-form" as="textarea" placeholder="Write or paste your code here" rows={3} onChange={this.handleCodeInput} />
+                </Form.Group>
+              </Form>
+            </Container>
           </Col>
           <Col lg="4" md="4" sm="12" xs="12">
-            <h2> Code Preview </h2>
-            <pre id="code-preview">
-              <code className={this.state.codeLanguage}>
-                {this.state.code}
-              </code>
-            </pre>
+            <Container id="code-editor">
+              <h3> Step 3: </h3>
+              <h4> Preview code and submit</h4> 
+              <pre id="code-preview">
+                <code className={this.state.codeLanguage}>
+                  {this.state.code}
+                </code>
+              </pre>
+            </Container>
           </Col>
         </Row>
         <Button variant="secondary" id="form-submit-button" onClick={this.handleSubmit}> Submit </Button>

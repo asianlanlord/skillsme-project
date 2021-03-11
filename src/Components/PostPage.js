@@ -1,4 +1,4 @@
-import './UserPage.css';
+import './PostPage.css';
 import Prism from 'prismjs';
 import './prism.css';
 import { Editor } from 'react-draft-wysiwyg';
@@ -7,7 +7,7 @@ import { Row, Col, Button, Form } from 'react-bootstrap';
 import React from 'react';
 
 
-class UserPage extends React.Component {
+class PostPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -17,46 +17,71 @@ class UserPage extends React.Component {
       contentState: null,
       code: '',
       codeLanguage: '',
-      post: {
-        post_title: ' ',
-        post_body: ' ',
-        post_code: ' ',
+      post: [{
+        post_title: '',
+        post_body: '',
+        post_code: '',
         post_codeLanguage: '',
-      },
+      }],
     }
+
+    this.addPostToStorage = this.addPostToStorage.bind(this);
 
   }
 
   componentDidMount() {
     Prism.highlightAll();
+    document.addEventListener("title-input", this.handleTitleInput)
+    document.addEventListener("body-input", this.onContentStateChange)
+    document.addEventListener("code-input", this.handleCodeInput)
+    document.addEventListener("code-language", this.handleLanguageSelect)
   }
+
   componentDidUpdate() {
     Prism.highlightAll();
   }
 
+  componentWillUnmout() {
+    document.removeEventListener("title-input", this.handleTitleInput)
+    document.removeEventListener("body-input", this.onContentStateChange)
+    document.removeEventListener("code-input", this.handleCodeInput)
+    document.removeEventListener("code-language", this.handleLanguageSelect)
+  }
+
   onContentStateChange = (contentState) => {
-    console.log('as HTML: ', draftToHtml(contentState))
     this.setState({
       contentState: contentState,
     });
   };
 
   handleTitleInput = (event) => {
-    this.setState({ 
+    this.setState({
       title: event.target.value
     })
   }
 
   handleCodeInput = (event) => {
-    this.setState({ 
-      code: event.target.value 
+    this.setState({
+      code: event.target.value
     });
   }
 
   handleLanguageSelect = (event) => {
     this.setState({
-      codeLanguage: event.target.value 
+      codeLanguage: event.target.value
     });
+  }
+
+  addPostToStorage(){
+    var post_array = JSON.parse(localStorage.getItem("post")) || []
+    post_array.push(this.state.post);
+
+
+    localStorage.setItem("post", JSON.stringify(post_array))
+
+    var i = JSON.parse(localStorage.getItem("post"));
+    console.log(i);
+
   }
 
   handleSubmit = () => {
@@ -67,12 +92,17 @@ class UserPage extends React.Component {
         post_code: this.state.code,
         post_codeLanguage: this.state.codeLanguage,
       }
-    })
+    }, async () => {
+      this.addPostToStorage();
+      this.setState({
+        title: '',
+        contentState: null,
+        code: '',
+        codeLanguage: '',
+      })
+    });
 
-    localStorage.setItem("post", JSON.stringify(this.state.post))
-
-    var i = JSON.parse(localStorage.getItem("post"));
-    console.log(i);
+    // For clearing data: localStorage.clear();
   }
 
   render() {
@@ -84,7 +114,7 @@ class UserPage extends React.Component {
             <Form>
               <Form.Group>
                 <Form.Label> Title </Form.Label>
-                <Form.Control id="title-form" as="textarea" rows={1} onChange={this.handleTitleInput}/>
+                <Form.Control id="title-form" as="textarea" rows={1} onChange={this.handleTitleInput} />
               </Form.Group>
               <Form.Group>
                 <Form.Label> Body </Form.Label>
@@ -155,8 +185,8 @@ class UserPage extends React.Component {
           <Col lg="4" md="4" sm="12" xs="12">
             <h2> Code Preview </h2>
             <pre id="code-preview">
-              <code  className={this.state.post.codeLanguage}>
-                {this.state.post.code}
+              <code className={this.state.codeLanguage}>
+                {this.state.code}
               </code>
             </pre>
           </Col>
@@ -167,4 +197,4 @@ class UserPage extends React.Component {
   }
 }
 
-export default UserPage;
+export default PostPage;

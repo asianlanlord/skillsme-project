@@ -1,0 +1,80 @@
+#login-page{
+    background-color: white;
+    border-radius: 2em;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2em;
+    margin-top: 2em;
+    padding-top: 2em;
+    width: 40vw;
+    min-width: 500px;
+    height: 65vh;
+    min-height: 600px;
+    font-size: 1.5em;
+}
+
+label{
+    font-weight: bold;
+    font-size: 1em;
+}
+
+#form-title{
+    color: #000000;
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 1em;
+    text-align: center;
+}
+
+.btn-container{
+    width: fit-content;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+}
+
+.form-container{
+    width: fit-content;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#form-textfield{
+    width: 100%;
+    margin-bottom: 3%;
+    border: 1px solid #8f8f8f;
+    font-size: 0.8em;
+    padding: 2% 2% 2% 2%;
+}
+
+#login-page-button{
+    text-align: center;
+    display:block;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #000000;
+    border: 1px solid #000000;
+}
+
+#login-page-button:hover{
+    background-color: grey;
+    border: 1px solid grey;
+}
+
+
+#form-cta{
+    font-size: 0.7em;
+    font-weight: 300;
+}
+
+#link{
+    color: blue;
+}
+
+#link:hover{
+    cursor: pointer;
+}
+

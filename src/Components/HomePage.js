@@ -8,47 +8,29 @@ class HomePage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      post: {
-        post_title: '',
-        post_body: '',
-        post_code: '',
-        post_codeLanguage: '',
-      }
+      posts: []
     }
   }
 
   componentDidMount() {
+    this.getPosts();
   }
   componentDidUpdate() {
   }
 
-  getLocalItem = () => {
-    var i = JSON.parse(localStorage.getItem("post"));
-    console.log(i.post_title)
-    console.log(i.post_body)
-    console.log(i.post_code)
-    console.log(i.post_codeLanguage)
-
-    return i;
-  }
-
   getPosts = () => {
-    var localPosts = this.getLocalItem();
-    this.setState({ post: {
-      post_title: localPosts.post_title,
-      post_body: localPosts.post_body,
-      post_code: localPosts.post_code,
-      post_codeLanguage: localPosts.post_codeLanguage
-    }})
-
-    console.log(this.state.post.post_title);
+    this.setState({
+      posts: JSON.parse(localStorage.getItem("post")),
+    })
   }
+
 
   render() {
     return (
       <div className="home-page" >
-        <p onClick={this.getPosts}> Get posts</p>
-        {renderHTML(this.state.post.post_body)}
+        {this.state.posts.map( (item) => (
+          <p><a key={item.post_title} href="/user" id="post-title"> Title: {item.post_title} </a> </p>
+        ))}
       </div>
     );
   }
